@@ -2,35 +2,96 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from "@azure/msal-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import LoginButton from "./components/LoginButton";
 import UserProfileQuery from "./components/UserProfile";
 import { LogoutButton } from "./components/LogoutButton";
+import { useUserProfileQuery } from "./hooks/useUserProfileQuery";
+
+const Navbar: React.FC = () => (
+  <nav className="bg-white shadow mb-6">
+    <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      {/* Left: App Title */}
+      <div className="flex-1">
+        <Link to="/" className="text-xl font-bold text-blue-700">
+          Azure AD App
+        </Link>
+      </div>
+      {/* Center: Profile Link */}
+      <div className="flex-1 flex justify-center">
+        <AuthenticatedTemplate>
+          <Link
+            to="/profile"
+            className="text-gray-700 hover:text-blue-700 font-medium"
+          >
+            Profile
+          </Link>
+        </AuthenticatedTemplate>
+      </div>
+      {/* Right: Logout/Login Button */}
+      <div className="flex-1 flex justify-end space-x-4">
+        <AuthenticatedTemplate>
+          <LogoutButton />
+        </AuthenticatedTemplate>
+        <UnauthenticatedTemplate>
+          <LoginButton />
+        </UnauthenticatedTemplate>
+      </div>
+    </div>
+  </nav>
+);
+
+const Home: React.FC = () => {
+  const {
+    data: userProfile,        
+  } = useUserProfileQuery();
+
+  return (
+    <div className="text-center">
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">My Azure AD App</h1>
+      <UnauthenticatedTemplate>
+        <div className="text-center">
+          <p className="text-gray-600">Please log in to view your profile.</p>
+        </div>
+      </UnauthenticatedTemplate>
+      <AuthenticatedTemplate>
+        <p className="text-gray-700">
+          Welcome {userProfile?.name}!
+          
+          
+        </p>
+
+        <p className="text-gray-700">          
+          <Link to="/profile" className="text-blue-700 underline">
+            See your profile
+          </Link>
+          .
+        </p>
+      </AuthenticatedTemplate>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            My Azure AD App
-          </h1>
-
-          <UnauthenticatedTemplate>
-            <div className="text-center">
-              <p className="text-gray-600">
-                Please log in to view your profile.
-              </p>
-            </div>
-            <LoginButton />
-          </UnauthenticatedTemplate>
-
-          <AuthenticatedTemplate>
-            <LogoutButton />
-            <UserProfileQuery />
-          </AuthenticatedTemplate>
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-100 p-4">
+        <Navbar />
+        <div className="max-w-2xl mx-auto space-y-6">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/profile"
+              element={
+                <AuthenticatedTemplate>
+                  <UserProfileQuery />
+                </AuthenticatedTemplate>
+              }
+            />
+          </Routes>
         </div>
       </div>
-    </div>
+    </BrowserRouter>
   );
 };
 
