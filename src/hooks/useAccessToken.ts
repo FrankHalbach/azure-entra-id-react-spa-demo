@@ -1,8 +1,8 @@
 // src/hooks/useAccessToken.ts
-import { useCallback } from 'react';
-import { useMsal } from '@azure/msal-react';
-import { AuthError, InteractionRequiredAuthError } from '@azure/msal-browser';
-import { useFrontendConfig } from './useFrontendConfig';
+import { useCallback } from "react";
+import { useMsal } from "@azure/msal-react";
+import { AuthError, InteractionRequiredAuthError } from "@azure/msal-browser";
+import { useFrontendConfig } from "./useFrontendConfig";
 
 export const useAccessToken = () => {
   const { instance, accounts } = useMsal();
@@ -21,8 +21,8 @@ export const useAccessToken = () => {
       });
       return response.accessToken;
     } catch (error) {
-      console.error('Silent token acquisition failed:', error);
-      
+      console.error("Silent token acquisition failed:", error);
+
       // Check if it's an interaction required error
       if (error instanceof InteractionRequiredAuthError) {
         try {
@@ -32,16 +32,19 @@ export const useAccessToken = () => {
           });
           return interactiveResponse.accessToken;
         } catch (interactiveError) {
-          console.error('Interactive token acquisition failed:', interactiveError);
+          console.error(
+            "Interactive token acquisition failed:",
+            interactiveError
+          );
           return null;
         }
       }
-      
+
       // For other types of auth errors
       if (error instanceof AuthError) {
-        console.error('Auth error:', error.message);
+        console.error("Auth error:", error.message);
       }
-      
+
       return null;
     }
   }, [instance, accounts, config]);
