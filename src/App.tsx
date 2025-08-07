@@ -7,39 +7,62 @@ import LoginButton from "./components/LoginButton";
 import UserProfileQuery from "./components/UserProfile";
 import { LogoutButton } from "./components/LogoutButton";
 import { useUserProfileQuery } from "./hooks/useUserProfileQuery";
+import { useProfilePhoto } from "./hooks/useProfilePhoto";
 
-const Navbar: React.FC = () => (
-  <nav className="bg-white shadow mb-6">
-    <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-      {/* Left: App Title */}
-      <div className="flex-1">
-        <Link to="/" className="text-xl font-bold text-blue-700">
-          Azure AD App
-        </Link>
-      </div>
-      {/* Center: Profile Link */}
-      <div className="flex-1 flex justify-center">
-        <AuthenticatedTemplate>
-          <Link
-            to="/profile"
-            className="text-gray-700 hover:text-blue-700 font-medium"
-          >
-            Profile
+const getInitials = (name?: string) => {
+  if (!name) return "NA";
+  const parts = name.split(" ");
+  return (parts[0]?.[0] || "") + (parts[1]?.[0] || "");
+};
+
+const Navbar: React.FC = () => {
+  const photoUrl = useProfilePhoto();
+  const { data: userProfile } = useUserProfileQuery();
+
+  return (
+    <nav className="bg-white shadow mb-6">
+      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Left: App Title */}
+        <div className="flex-1">
+          <Link to="/" className="text-xl font-bold text-blue-700">
+            Azure AD App
           </Link>
-        </AuthenticatedTemplate>
+        </div>
+        {/* Center: Profile Link */}
+        <div className="flex-1 flex justify-center">
+          <AuthenticatedTemplate>
+            <Link
+              to="/profile"
+              className="text-gray-700 hover:text-blue-700 font-medium"
+            >
+              Profile
+            </Link>
+          </AuthenticatedTemplate>
+        </div>
+        {/* Right: Avatar + Logout/Login Button */}
+        <div className="flex-1 flex items-center justify-end space-x-4">
+          <AuthenticatedTemplate>
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt="Profile"
+                className="w-9 h-9 rounded-full border object-cover"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-blue-200 flex items-center justify-center text-blue-800 font-bold text-lg">
+                {getInitials(userProfile?.name)}
+              </div>
+            )}
+            <LogoutButton />
+          </AuthenticatedTemplate>
+          <UnauthenticatedTemplate>
+            <LoginButton />
+          </UnauthenticatedTemplate>
+        </div>
       </div>
-      {/* Right: Logout/Login Button */}
-      <div className="flex-1 flex justify-end space-x-4">
-        <AuthenticatedTemplate>
-          <LogoutButton />
-        </AuthenticatedTemplate>
-        <UnauthenticatedTemplate>
-          <LoginButton />
-        </UnauthenticatedTemplate>
-      </div>
-    </div>
-  </nav>
-);
+    </nav>
+  );
+};
 
 const Home: React.FC = () => {
   const {

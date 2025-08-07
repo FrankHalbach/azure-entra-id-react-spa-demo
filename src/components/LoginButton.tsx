@@ -10,9 +10,9 @@ const LoginButton: React.FC = () => {
   const handleLogin = async () => {
     if (!frontendConfig) return;
 
-    instance.loginPopup({
-      scopes: frontendConfig.scopes,
-    });
+    instance.loginPopup(
+//      {      scopes: frontendConfig.graphScopes,    }
+  );
   };
 
   if (isLoading) return <button disabled>Loading...</button>;

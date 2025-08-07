@@ -23,7 +23,7 @@ const MsalInitializer: React.FC = () => {
     cache: {
       cacheLocation: 'sessionStorage',
       storeAuthStateInCookie: false,
-    },    
+    },       
   };
 
   

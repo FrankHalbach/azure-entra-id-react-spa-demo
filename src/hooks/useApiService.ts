@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import axios, { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
-import { useAccessToken } from './useAccessToken';
+import { useApiAccessToken } from './useAccessToken';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -19,7 +19,7 @@ interface ApiErrorResponse {
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const useApiService = () => {
-  const getToken = useAccessToken();
+  const getToken = useApiAccessToken();
 
   const makeAuthenticatedRequest = useCallback(async <T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -27,7 +27,7 @@ export const useApiService = () => {
     data?: unknown
   ): Promise<ApiResponse<T>> => {
     const token = await getToken();
-    
+        
     const config = {
       method,
       url: `${baseUrl}${endpoint}`,
