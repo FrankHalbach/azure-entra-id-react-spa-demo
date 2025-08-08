@@ -11,6 +11,7 @@ export const LogoutButton: React.FC = () => {
     console.error("Frontend config is not available for logout.");
     return null;
   }
+
   const handleLogout = () => {
     instance.logoutPopup({
       postLogoutRedirectUri: frontendConfig.redirectUri,

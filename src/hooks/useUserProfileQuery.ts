@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useApiService } from "./useApiService";
 
-
 export interface UserProfile {
   id: string;
   name: string;
@@ -13,13 +12,12 @@ export interface UserProfile {
   tenantId: string;
 }
 
-
-const queryUrl = `/user/profile`;    
+const queryUrl = `/user/profile`;
 
 export const useUserProfileQuery = () => {
   const { get } = useApiService();
-  const isAuthenticated = useIsAuthenticated();  
-  
+  const isAuthenticated = useIsAuthenticated();
+
   return useQuery({
     queryKey: ["user-profile"],
     queryFn: async (): Promise<UserProfile> => {

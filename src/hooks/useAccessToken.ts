@@ -4,15 +4,16 @@ import { useMsal } from "@azure/msal-react";
 import { AuthError, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { useFrontendConfig } from "./useFrontendConfig";
 
-
-
-export const useApiAccessToken = () => {
+/**
+ * Generic hook to acquire an access token for given scopes.
+ */
+const useAccessTokenForScopes = (scopesKey: "apiScopes" | "graphScopes") => {
   const { instance, accounts } = useMsal();
   const { data: config } = useFrontendConfig();
 
-  const getApiToken = useCallback(async (): Promise<string | null> => {
+  const getToken = useCallback(async (): Promise<string | null> => {
     const account = accounts[0];
-    const scopes = config?.apiScopes ?? [];
+    const scopes = config?.[scopesKey] ?? [];
 
     if (!instance || !account || scopes.length === 0) return null;
 
@@ -25,7 +26,6 @@ export const useApiAccessToken = () => {
     } catch (error) {
       console.error("Silent token acquisition failed:", error);
 
-      // Check if it's an interaction required error
       if (error instanceof InteractionRequiredAuthError) {
         try {
           const interactiveResponse = await instance.acquireTokenPopup({
@@ -42,62 +42,23 @@ export const useApiAccessToken = () => {
         }
       }
 
-      // For other types of auth errors
       if (error instanceof AuthError) {
         console.error("Auth error:", error.message);
       }
 
       return null;
     }
-  }, [instance, accounts, config]);
+  }, [instance, accounts, config, scopesKey]);
 
-  return getApiToken;
+  return getToken;
 };
 
-export const useGraphAccessToken = () => {
-  const { instance, accounts } = useMsal();
-  const { data: config } = useFrontendConfig();
+/**
+ * Hook to acquire an access token for your API.
+ */
+export const useApiAccessToken = () => useAccessTokenForScopes("apiScopes");
 
-  const getGraphToken = useCallback(async (): Promise<string | null> => {
-    const account = accounts[0];
-    const scopes = config?.graphScopes ?? [];
-
-    if (!instance || !account || scopes.length === 0) return null;
-
-    try {
-      const response = await instance.acquireTokenSilent({
-        scopes,
-        account,
-      });
-      return response.accessToken;
-    } catch (error) {
-      console.error("Silent token acquisition failed:", error);
-
-      // Check if it's an interaction required error
-      if (error instanceof InteractionRequiredAuthError) {
-        try {
-          const interactiveResponse = await instance.acquireTokenPopup({
-            scopes,
-            account,
-          });
-          return interactiveResponse.accessToken;
-        } catch (interactiveError) {
-          console.error(
-            "Interactive token acquisition failed:",
-            interactiveError
-          );
-          return null;
-        }
-      }
-
-      // For other types of auth errors
-      if (error instanceof AuthError) {
-        console.error("Auth error:", error.message);
-      }
-
-      return null;
-    }
-  }, [instance, accounts, config]);
-
-  return getGraphToken;
-};
+/**
+ * Hook to acquire an access token for Microsoft Graph.
+ */
+export const useGraphAccessToken = () => useAccessTokenForScopes("graphScopes");

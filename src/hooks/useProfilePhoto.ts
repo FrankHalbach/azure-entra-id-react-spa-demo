@@ -13,9 +13,12 @@ export function useProfilePhoto() {
         return;
       }
       try {
-        const res = await fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://graph.microsoft.com/v1.0/me/photo/$value",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (res.ok) {
           const blob = await res.blob();
           setPhotoUrl(URL.createObjectURL(blob));
