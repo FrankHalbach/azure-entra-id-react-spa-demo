@@ -6,6 +6,10 @@ import { useApiService } from "./useApiService";
 export interface UserProfile {
   id: string;
   name: string;
+  uniqueName: string;
+  upn: string;
+  givenName: string;
+  familyName: string;
   email: string;
   roles: string[];
   clientId: string;

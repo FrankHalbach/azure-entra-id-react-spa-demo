@@ -81,6 +81,44 @@ const UserProfileQuery: React.FC = () => {
             </p>
           </div>
 
+
+<div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              unique Name
+            </label>
+            <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded">
+              {userProfile.uniqueName}
+            </p>
+          </div>
+
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              UPN
+            </label>
+            <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded">
+              {userProfile.upn}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Given name
+            </label>
+            <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded">
+              {userProfile.givenName}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Family Name
+            </label>
+            <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded">
+              {userProfile.familyName}
+            </p>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
